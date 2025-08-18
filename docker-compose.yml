@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: carmar-postgres
+    environment:
+      POSTGRES_DB: carmardb
+      POSTGRES_USER: carmaradminuser
+      POSTGRES_PASSWORD: c4rm4rP4$
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+networks:
+  axum-net:
