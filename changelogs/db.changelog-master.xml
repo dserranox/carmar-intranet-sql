@@ -7,4 +7,5 @@
 
     <include file="create/20250813_init_db.sql" relativeToChangelogFile="true"/>
     <include file="create/20250814_ordenes_docs.sql" relativeToChangelogFile="true"/>
+    <include file="create/20250818_usuarios_roles.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
