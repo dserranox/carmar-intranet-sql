@@ -69,6 +69,12 @@ ALTER TABLE ORDENES
     FOREIGN KEY (ORD_SIT_ID) REFERENCES SITUACIONES(SIT_ID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
+
+ALTER TABLE public.ordenes ADD aud_usr_ins varchar NOT NULL;
+ALTER TABLE public.ordenes ADD aud_usr_upd varchar NOT NULL;
+ALTER TABLE public.ordenes ADD aud_fecha_ins timestamp NOT NULL;
+ALTER TABLE public.ordenes ADD aud_fecha_upd timestamp NOT NULL;
+
 -- =======================
 --  DATOS ESTATICOS
 -- =======================
