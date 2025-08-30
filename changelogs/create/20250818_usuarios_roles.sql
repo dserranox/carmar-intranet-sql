@@ -93,7 +93,8 @@ INSERT INTO PERMISOS (PRM_CLAVE,PRM_DESCRIPCION) VALUES
   ('USUARIOS:READ','Ver usuarios y roles'),
   ('USUARIOS:WRITE','Gestionar usuarios y roles'),
   ('TAREAS:READ','Ver tareas'),
-  ('TAREAS:WRITE','Gestionar tareas')
+  ('TAREAS:WRITE','Gestionar tareas'),
+  ('TAREAS:READ_ALL','Ver todas las tareas')
 ON CONFLICT DO NOTHING;
 
 -- ADMIN: todos los permisos
