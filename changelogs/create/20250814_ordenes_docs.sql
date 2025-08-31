@@ -19,7 +19,7 @@ ALTER TABLE ORDENES_DOCUMENTOS
 -- =======================
 --  DATOS PRUEBAS
 -- =======================
-INSERT INTO ORDENES_DOCUMENTOS(ODO_NOMBRE,ODO_DRIVE_URL,ODO_ORD_ID) VALUES 
-    ('VIGENTE - REV1 - C8309 - ARNES LUCES DE TRASLADO GEOSPOT.pdf','https://drive.google.com/file/d/1AggRe3Y8IZxdamRFlStW4YRqfgi4t73y/view?usp=drive_link', 2),
-    ('cba-sticker.pdf','https://drive.google.com/file/d/12cqDdwtc-eSScPrzXtoicLjIbEpqJAVM/view?usp=drive_link', 2)
-ON CONFLICT DO NOTHING;
+-- INSERT INTO ORDENES_DOCUMENTOS(ODO_NOMBRE,ODO_DRIVE_URL,ODO_ORD_ID) VALUES 
+--     ('VIGENTE - REV1 - C8309 - ARNES LUCES DE TRASLADO GEOSPOT.pdf','https://drive.google.com/file/d/1AggRe3Y8IZxdamRFlStW4YRqfgi4t73y/view?usp=drive_link', 2),
+--     ('cba-sticker.pdf','https://drive.google.com/file/d/12cqDdwtc-eSScPrzXtoicLjIbEpqJAVM/view?usp=drive_link', 2)
+-- ON CONFLICT DO NOTHING;
