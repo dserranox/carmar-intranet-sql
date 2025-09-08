@@ -10,4 +10,5 @@
     <include file="create/20250818_usuarios_roles.sql" relativeToChangelogFile="true"/>
     <include file="create/20250825_operaciones.sql" relativeToChangelogFile="true"/>
     <include file="create/20250825_tareas.sql" relativeToChangelogFile="true"/>
+    <include file="create/20250907_producto_docs.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

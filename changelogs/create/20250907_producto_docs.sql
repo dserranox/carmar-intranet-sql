@@ -1,0 +1,26 @@
+-- Orden de borrado por dependencias
+DROP TABLE IF EXISTS ORDENES_DOCUMENTOS CASCADE;
+DROP TABLE IF EXISTS PRODUCTO_DOCUMENTOS CASCADE;
+
+
+-- =======================
+--  PRODUCTO_DOCUMENTOS
+-- =======================
+CREATE TABLE IF NOT EXISTS PRODUCTO_DOCUMENTOS (
+  PDO_ID BIGSERIAL PRIMARY KEY,
+  PDO_NOMBRE VARCHAR(255) NOT NULL,
+  PDO_DRIVE_URL VARCHAR(1024) NOT NULL,
+  PDO_PRD_ID BIGINT NOT NULL
+);
+
+ALTER TABLE PRODUCTO_DOCUMENTOS
+  ADD CONSTRAINT fk_producto_documento_producto
+    FOREIGN KEY (PDO_PRD_ID) REFERENCES PRODUCTOS(PRD_ID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- =======================
+--  DATOS PRUEBAS
+-- =======================
+-- INSERT INTO PRODUCTO_DOCUMENTOS(PDO_NOMBRE,PDO_DRIVE_URL,PDO_PRD_ID) VALUES 
+--     ('VIGENTE - REV1 - C8309 - ARNES LUCES DE TRASLADO GEOSPOT.pdf','https://drive.google.com/file/d/1AggRe3Y8IZxdamRFlStW4YRqfgi4t73y/view?usp=drive_link', 2),
+--     ('cba-sticker.pdf','https://drive.google.com/file/d/12cqDdwtc-eSScPrzXtoicLjIbEpqJAVM/view?usp=drive_link', 2)
+-- ON CONFLICT DO NOTHING;
