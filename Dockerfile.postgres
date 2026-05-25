@@ -1,0 +1,3 @@
+FROM postgres:16
+RUN ln -sf /usr/share/zoneinfo/America/Argentina/Buenos_Aires \
+           /usr/share/zoneinfo/America/Buenos_Aires

@@ -2,12 +2,17 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres:16
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    image: carmar-postgres:local
     container_name: carmar-postgres
     environment:
       POSTGRES_DB: carmardb
       POSTGRES_USER: carmaradminuser
       POSTGRES_PASSWORD: c4rm4rP4$
+      TZ: America/Argentina/Buenos_Aires
+      PGTZ: America/Argentina/Buenos_Aires
     ports:
       - "5432:5432"
     volumes:
