@@ -1,0 +1,90 @@
+-- =======================
+--  ROLES NUEVOS Y NOTIFICACIONES
+--  1) Un rol CALIDAD para el responsable, que además produce.
+--  2) Un rol JEFE_PRODUCCION, que planifica y asigna pero no toca usuarios.
+--  3) Notificaciones internas: cuando algo sale KO, le llega al administrador
+--     y al jefe de producción.
+-- =======================
+
+-- --------------------------------------------------- roles
+INSERT INTO ROLES (ROL_NOMBRE, ROL_DESCRIPCION)
+SELECT 'CALIDAD', 'Responsable de calidad: recorridas, controles y producción'
+WHERE NOT EXISTS (SELECT 1 FROM ROLES WHERE ROL_NOMBRE = 'CALIDAD');
+
+INSERT INTO ROLES (ROL_NOMBRE, ROL_DESCRIPCION)
+SELECT 'JEFE_PRODUCCION', 'Jefe de producción: planifica, asigna y sigue la planta'
+WHERE NOT EXISTS (SELECT 1 FROM ROLES WHERE ROL_NOMBRE = 'JEFE_PRODUCCION');
+
+-- El responsable de calidad hace las recorridas y además trabaja: por eso lleva
+-- ASIGNACIONES:READ (ve su cola en MI TRABAJO) y TAREAS:WRITE.
+INSERT INTO ROLES_PERMISOS (RP_ROL_ID, RP_PRM_ID)
+SELECT r.ROL_ID, p.PRM_ID
+FROM ROLES r, PERMISOS p
+WHERE r.ROL_NOMBRE = 'CALIDAD'
+  AND p.PRM_CLAVE IN (
+    'ORDENES:READ', 'PRODUCTOS:READ', 'CLIENTES:READ',
+    'TAREAS:READ', 'TAREAS:WRITE',
+    'ASIGNACIONES:READ',
+    'CALIDAD:READ', 'CALIDAD:WRITE'
+  )
+  AND NOT EXISTS (
+    SELECT 1 FROM ROLES_PERMISOS rp WHERE rp.RP_ROL_ID = r.ROL_ID AND rp.RP_PRM_ID = p.PRM_ID);
+
+-- El jefe de producción ve todo lo de planta y asigna, pero no administra
+-- usuarios ni carga controles de calidad.
+INSERT INTO ROLES_PERMISOS (RP_ROL_ID, RP_PRM_ID)
+SELECT r.ROL_ID, p.PRM_ID
+FROM ROLES r, PERMISOS p
+WHERE r.ROL_NOMBRE = 'JEFE_PRODUCCION'
+  AND p.PRM_CLAVE IN (
+    'ORDENES:READ', 'ORDENES:WRITE',
+    'PRODUCTOS:READ', 'PRODUCTOS:WRITE', 'CLIENTES:READ',
+    'TAREAS:READ', 'TAREAS:READ_ALL', 'TAREAS:WRITE',
+    'ASIGNACIONES:READ', 'ASIGNACIONES:READ_ALL', 'ASIGNACIONES:WRITE',
+    'CORTE:READ', 'SABANAS:READ_ALL', 'SABANAS:WRITE',
+    'CALIDAD:READ',
+    'USUARIOS:READ'
+  )
+  AND NOT EXISTS (
+    SELECT 1 FROM ROLES_PERMISOS rp WHERE rp.RP_ROL_ID = r.ROL_ID AND rp.RP_PRM_ID = p.PRM_ID);
+
+-- --------------------------------------------------- notificaciones
+-- El aviso en sí: qué pasó, dónde y con qué gravedad.
+CREATE TABLE IF NOT EXISTS NOTIFICACIONES (
+  NOF_ID BIGSERIAL PRIMARY KEY,
+  NOF_TIPO VARCHAR(40) NOT NULL,              -- CALIDAD_KO | CONTROL_NO_CONFORME
+  NOF_SEVERIDAD VARCHAR(20) NOT NULL DEFAULT 'ALERTA',   -- INFO | ALERTA | CRITICA
+  NOF_TITULO VARCHAR(160) NOT NULL,
+  NOF_MENSAJE VARCHAR(1000) NOT NULL,
+  -- De dónde salió, para poder ir al origen desde la notificación.
+  NOF_ORIGEN_TIPO VARCHAR(30),                -- RUTA_CALIDAD | CORTE
+  NOF_ORIGEN_ID BIGINT,
+  NOF_ORD_ID BIGINT REFERENCES ORDENES(ORD_ID) ON UPDATE CASCADE ON DELETE SET NULL,
+  NOF_NRO_PLAN VARCHAR(64),
+  -- Quién la disparó.
+  NOF_USR_ID BIGINT REFERENCES USUARIOS(USR_ID) ON UPDATE CASCADE ON DELETE SET NULL,
+  NOF_FECHA TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  aud_usr_ins varchar(250) NOT NULL,
+  aud_usr_upd varchar(250) NOT NULL,
+  aud_fecha_ins timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  aud_fecha_upd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS ix_nof_fecha ON NOTIFICACIONES(NOF_FECHA DESC);
+CREATE INDEX IF NOT EXISTS ix_nof_tipo  ON NOTIFICACIONES(NOF_TIPO, NOF_FECHA DESC);
+
+-- Un mismo aviso le llega a varias personas, y cada una lo marca leído por su lado.
+CREATE TABLE IF NOT EXISTS NOTIFICACIONES_DESTINATARIOS (
+  NOD_ID BIGSERIAL PRIMARY KEY,
+  NOD_NOF_ID BIGINT NOT NULL REFERENCES NOTIFICACIONES(NOF_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+  NOD_USR_ID BIGINT NOT NULL REFERENCES USUARIOS(USR_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+  NOD_LEIDA BOOLEAN NOT NULL DEFAULT FALSE,
+  NOD_FECHA_LECTURA TIMESTAMP,
+  aud_usr_ins varchar(250) NOT NULL,
+  aud_usr_upd varchar(250) NOT NULL,
+  aud_fecha_ins timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  aud_fecha_upd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS ux_nod_aviso_usuario ON NOTIFICACIONES_DESTINATARIOS(NOD_NOF_ID, NOD_USR_ID);
+CREATE INDEX IF NOT EXISTS ix_nod_pendientes ON NOTIFICACIONES_DESTINATARIOS(NOD_USR_ID, NOD_LEIDA);

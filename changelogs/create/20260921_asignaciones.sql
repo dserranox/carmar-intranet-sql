@@ -1,0 +1,76 @@
+-- =======================
+--  ASIGNACIONES DE TRABAJO
+--  El administrador le arma a cada operario su cola de trabajo: qué orden, qué
+--  actividad, cuántas unidades y en qué puesto o máquina. La misma orden y
+--  actividad puede repartirse entre varios operarios (40 unidades = 20 + 20).
+--  La TAREA se crea recién cuando el operario arranca la asignación.
+-- =======================
+CREATE TABLE IF NOT EXISTS ASIGNACIONES (
+  ASG_ID BIGSERIAL PRIMARY KEY,
+  ASG_ORD_ID BIGINT NOT NULL REFERENCES ORDENES(ORD_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+  ASG_OPE_ID BIGINT NOT NULL REFERENCES OPERACIONES(OPE_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+  ASG_USR_ID BIGINT NOT NULL REFERENCES USUARIOS(USR_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+  -- Cantidad de unidades que le tocan a este operario de esa orden y actividad.
+  ASG_CANTIDAD INT,
+  -- Orden dentro de la cola del operario: 1 es lo próximo que tiene que hacer.
+  ASG_PRIORIDAD INT NOT NULL DEFAULT 1,
+  ASG_NRO_MAQUINA INT,
+  ASG_PUESTO VARCHAR(64),
+  ASG_ESTADO VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',   -- PENDIENTE | EN_CURSO | FINALIZADA | CANCELADA
+  -- Tarea que se generó al arrancarla.
+  ASG_TAR_ID BIGINT REFERENCES TAREAS(TAR_ID) ON UPDATE CASCADE ON DELETE SET NULL,
+  ASG_FECHA_ASIGNACION TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ASG_FECHA_INICIO TIMESTAMP,
+  ASG_FECHA_FIN TIMESTAMP,
+  ASG_OBSERVACIONES VARCHAR(500),
+  aud_usr_ins varchar(250) NOT NULL,
+  aud_usr_upd varchar(250) NOT NULL,
+  aud_fecha_ins timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  aud_fecha_upd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS ix_asg_cola   ON ASIGNACIONES(ASG_USR_ID, ASG_ESTADO, ASG_PRIORIDAD);
+CREATE INDEX IF NOT EXISTS ix_asg_orden  ON ASIGNACIONES(ASG_ORD_ID);
+CREATE INDEX IF NOT EXISTS ix_asg_estado ON ASIGNACIONES(ASG_ESTADO);
+CREATE INDEX IF NOT EXISTS ix_asg_tarea  ON ASIGNACIONES(ASG_TAR_ID);
+
+-- =======================
+--  PERMISOS
+-- =======================
+INSERT INTO PERMISOS (PRM_CLAVE, PRM_DESCRIPCION) VALUES
+  ('ASIGNACIONES:READ','Ver la cola de trabajo propia'),
+  ('ASIGNACIONES:READ_ALL','Ver las asignaciones de todos los operarios'),
+  ('ASIGNACIONES:WRITE','Asignar trabajo a los operarios y reordenar su cola')
+ON CONFLICT DO NOTHING;
+
+-- ADMIN: todos los permisos
+INSERT INTO ROLES_PERMISOS (RP_ROL_ID, RP_PRM_ID)
+SELECT r.ROL_ID, p.PRM_ID
+FROM ROLES r CROSS JOIN PERMISOS p
+WHERE r.ROL_NOMBRE = 'ADMIN'
+  AND NOT EXISTS (
+    SELECT 1 FROM ROLES_PERMISOS rp
+    WHERE rp.RP_ROL_ID = r.ROL_ID AND rp.RP_PRM_ID = p.PRM_ID
+  );
+
+-- OPERARIO: ve y arranca lo suyo
+INSERT INTO ROLES_PERMISOS (RP_ROL_ID, RP_PRM_ID)
+SELECT r.ROL_ID, p.PRM_ID
+FROM ROLES r
+JOIN PERMISOS p ON p.PRM_CLAVE = 'ASIGNACIONES:READ'
+WHERE r.ROL_NOMBRE = 'OPERARIO'
+  AND NOT EXISTS (
+    SELECT 1 FROM ROLES_PERMISOS rp
+    WHERE rp.RP_ROL_ID = r.ROL_ID AND rp.RP_PRM_ID = p.PRM_ID
+  );
+
+-- CONSULTA: lectura de todas
+INSERT INTO ROLES_PERMISOS (RP_ROL_ID, RP_PRM_ID)
+SELECT r.ROL_ID, p.PRM_ID
+FROM ROLES r
+JOIN PERMISOS p ON p.PRM_CLAVE IN ('ASIGNACIONES:READ', 'ASIGNACIONES:READ_ALL')
+WHERE r.ROL_NOMBRE = 'CONSULTA'
+  AND NOT EXISTS (
+    SELECT 1 FROM ROLES_PERMISOS rp
+    WHERE rp.RP_ROL_ID = r.ROL_ID AND rp.RP_PRM_ID = p.PRM_ID
+  );

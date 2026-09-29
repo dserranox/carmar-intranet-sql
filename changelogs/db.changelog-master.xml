@@ -12,4 +12,25 @@
     <include file="create/20250825_tareas.sql" relativeToChangelogFile="true"/>
     <include file="create/20250907_producto_docs.sql" relativeToChangelogFile="true"/>
     <include file="alter/20260201_tareas_perdida_velocidad.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260920_sabanas_corte.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260920_tolerancia_corte_15.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260920_traccion_por_terminal.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260921_eventos_corte.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260921_resync_secuencias.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260921_sabanas_suspension.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260921_asignaciones.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260921_tareas_puesto.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260921_asignaciones_multiactividad.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260927_calidad_rutas.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260927_operacion_ruta_control.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260928_roles_y_notificaciones.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260928_no_conformidades.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260928_ocultar_cliente.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260929_operaciones_controles.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260929_jefe_carga_ordenes.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260929_reloj_de_tarea.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260929_controles_en_tarea.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_areas_de_operacion.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_sabana_corrugado.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_corrugado_sabana_real.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
