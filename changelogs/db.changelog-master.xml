@@ -33,4 +33,6 @@
     <include file="alter/20260930_areas_de_operacion.sql" relativeToChangelogFile="true"/>
     <include file="alter/20260930_sabana_corrugado.sql" relativeToChangelogFile="true"/>
     <include file="alter/20260930_corrugado_sabana_real.sql" relativeToChangelogFile="true"/>
+    <include file="create/20260929_picking.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260929_picking_proveedor.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
