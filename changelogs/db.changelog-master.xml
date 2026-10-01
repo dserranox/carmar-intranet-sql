@@ -35,4 +35,9 @@
     <include file="alter/20260930_corrugado_sabana_real.sql" relativeToChangelogFile="true"/>
     <include file="create/20260929_picking.sql" relativeToChangelogFile="true"/>
     <include file="alter/20260929_picking_proveedor.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_nc_producto_y_lote.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_criterios_de_calidad.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_actividades_asignables.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20260930_operario_sin_ordenes.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261001_tablero.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
