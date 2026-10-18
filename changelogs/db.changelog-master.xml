@@ -40,4 +40,5 @@
     <include file="alter/20260930_actividades_asignables.sql" relativeToChangelogFile="true"/>
     <include file="alter/20260930_operario_sin_ordenes.sql" relativeToChangelogFile="true"/>
     <include file="alter/20261001_tablero.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261018_permisos_de_base.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
