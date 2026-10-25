@@ -43,4 +43,10 @@
     <include file="alter/20261018_permisos_de_base.sql" relativeToChangelogFile="true"/>
     <include file="alter/20261018_tiempo_no_confiable.sql" relativeToChangelogFile="true"/>
     <include file="alter/20261018_posicion_en_sabana.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261024_operaciones_cmm_est.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261024_nc_validacion_y_anulacion.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261024_permiso_validar_nc.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261024_cortes_salteados.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261024_recorridas_pausa_y_datos.sql" relativeToChangelogFile="true"/>
+    <include file="alter/20261024_puntos_puesta_a_punto.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
